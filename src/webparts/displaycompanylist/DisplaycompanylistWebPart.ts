@@ -21,24 +21,25 @@ export interface IDisplaycompanylistWebPartProps {
 
 // 21. create an interface to replace any
 export interface ICompany{
+  ID : number;
   Title : string;
   Location : string;
-  HeadCount : number;
+  Headcount : number;
 }
 
 export default class DisplaycompanylistWebPart extends BaseClientSideWebPart<IDisplaycompanylistWebPartProps> {
   // 5. Declare Variable to store data
   private data : ICompany[] = [ // 22. replaced ANY with array of Icompany interface
     //15. entering sample data for local
-    { Title : "Sample 1", Location : "Austin", HeadCount : 50},
-    { Title : "Sample 2", Location : "Dallas", HeadCount : 51},
-    { Title : "Sample 3", Location : "Houston", HeadCount : 52}
+    { ID : 1, Title : "Sample 1", Location : "Austin", Headcount : 50},
+    { ID : 2,Title : "Sample 2", Location : "Dallas", Headcount : 51},
+    { ID : 3, Title : "Sample 3", Location : "Houston", Headcount : 52}
   ];
 
   // 2. Write function to get Data
-  private getCompanyData() : ICompany[] {
+  private getCompanyData() : any {
     // 3. REST URL for getting All items from list
-    let listURL = this.context.pageContext.web.absoluteUrl + "/_api/Lists/GetByTitle('Company')/Items?$select=Title,Location,HeadCount"; // 19. Query updated with select to selective data
+    let listURL = this.context.pageContext.web.absoluteUrl + "/_api/Lists/GetByTitle('Company')/Items?$select=ID,Title,Location,Headcount"; // 19. Query updated with select to selective data
     console.log("Calling REST ENDPOINT : " + listURL);
 
     // 4. here is gets data using promise, this is a async call
@@ -46,9 +47,9 @@ export default class DisplaycompanylistWebPart extends BaseClientSideWebPart<IDi
       .then((res : SPHttpClientResponse) => {
         console.log("Rest call successful returning data ..");
         return res.json();
-      }).then((d : ICompany[]) =>{
-        console.log("Data received : " + JSON.stringify(d));
-          this.data = d;
+      }).then((d : any) =>{
+        console.log("Data received : " + JSON.stringify(d.value));
+          this.data = d.value;
           // 9. Call renderlist method, here HTML and data combines
           this.renderList(this.data);
       }).catch((err) => { // 11. Error handling
@@ -66,7 +67,7 @@ export default class DisplaycompanylistWebPart extends BaseClientSideWebPart<IDi
     <div>
       Company ID : ${item.Title} <br\>
       Location : ${item.Location} <br\>
-      HaedCount : ${item.HeadCount}
+      HaedCount : ${item.Headcount}
     </div>`;
   });
 
